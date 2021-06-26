@@ -14,3 +14,5 @@ found in `doc/notes`
   * operators +, -, \*, /
   * parenthesis (, )
   * floating point separator is both . and ,
+  * an opening parenthesis is __always__ followed by an operand or a closing
+    parenthesis, otherwise the expression is incorrect
