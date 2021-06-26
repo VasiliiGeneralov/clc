@@ -11,6 +11,6 @@ found in `doc/notes`
   operands
 * allowed input symbols are:
   * digits 0-9
-  * operators +, -, `*`, /
+  * operators +, -, \*, /
   * parenthesis (, )
   * floating point separator is both . and ,
