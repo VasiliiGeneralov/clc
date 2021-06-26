@@ -5,3 +5,12 @@ command-line interface
 ## Details
 For more details please see `doc/task.pdf`. Notes and side thoughts can be
 found in `doc/notes`
+
+## Assumptions
+* all operations are binary, i.e. every operator __always__ has __two__
+  operands
+* allowed input symbols are:
+  * digits 0-9
+  * operators +, -, `*`, /
+  * parenthesis (, )
+  * floating point separator is both . and ,
