@@ -13,6 +13,7 @@ class Parser {
     static std::vector<std::string> parse(const std::vector<std::string>& v);
   private:
     Parser() = default;
+    bool checkout(const std::vector<std::string>& v);
 };
 
 #endif // PARSER_HPP
