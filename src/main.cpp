@@ -15,4 +15,9 @@ int main()
   for (const auto& t : tokens) {
     std::cout << t << std::endl;
   }
+  tokens = Parser::parse(tokens);
+  for (const auto& t : tokens) {
+    std::cout << t;
+  }
+  std::cout << std::endl;
 }
