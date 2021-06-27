@@ -1,6 +1,5 @@
 #include <iostream>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #include "tokenizer/Tokenizer.hpp"
@@ -13,19 +12,13 @@ int main()
   std::getline(std::cin, input);
   std::vector<std::string> tokens;
   tokens = Tokenizer::tokenize(input);
-  for (const auto& t : tokens) {
-    std::cout << t << std::endl;
+  if (tokens.empty()) {
+    return 1;
   }
   tokens = Parser::parse(tokens);
-  for (const auto& t : tokens) {
-    std::cout << t;
+  if (tokens.empty()) {
+    return 2;
   }
-  std::cout << std::endl;
-
-  auto [isFloat, iResult, fResult] = Analyzer::analyze(tokens);
-  if (isFloat) {
-    std::cout << "float result is " << fResult << std::endl;
-  } else {
-    std::cout << "integer result is " << iResult << std::endl;
-  }
+  std::cout << Analyzer::analyze(tokens) << std::endl;
+  return 0;
 }
