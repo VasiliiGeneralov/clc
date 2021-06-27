@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "tokenizer/Tokenizer.hpp"
@@ -20,4 +21,11 @@ int main()
     std::cout << t;
   }
   std::cout << std::endl;
+
+  auto [isFloat, iResult, fResult] = Analyzer::analyze(tokens);
+  if (isFloat) {
+    std::cout << "float result is " << fResult << std::endl;
+  } else {
+    std::cout << "integer result is " << iResult << std::endl;
+  }
 }
