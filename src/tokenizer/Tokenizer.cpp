@@ -1,183 +1,170 @@
+#include <stdexcept>
 #include <vector>
-#include <iostream>
 #include <string>
 
 #include "Tokenizer.hpp"
 
-namespace tokenizer {
+Tokenizer& Tokenizer::get()
+{
+  static Tokenizer t;
+  return t;
+}
 
-  TokenInt::TokenInt(int newValue) : value(newValue)
-  {
-    std::cout << "created TokenInt with " << value << std::endl;
-  }
+bool Tokenizer::verify(const std::string& s)
+{
+  return checkSymbols(s) && checkParenthesis(s);
+}
 
-  TokenFloat::TokenFloat(double newValue) : value(newValue)
-  {
-    std::cout << "created TokenFloat with " << value << std::endl;
-  }
-
-  TokenAdd::TokenAdd()
-  {
-    std::cout << "created TokenAdd" << std::endl;
-  }
-
-  TokenSub::TokenSub()
-  {
-    std::cout << "created TokenSub" << std::endl;
-  }
-
-  TokenMul::TokenMul()
-  {
-    std::cout << "created TokenMul" << std::endl;
-  }
-
-  TokenDiv::TokenDiv()
-  {
-    std::cout << "created TokenDiv" << std::endl;
-  }
-
-  TokenOpenParen::TokenOpenParen()
-  {
-    std::cout << "created TokenOpenParen" << std::endl;
-  }
-
-  TokenCloseParen::TokenCloseParen()
-  {
-    std::cout << "created TokenCloseParen" << std::endl;
-  }
-
-  Token* createIntOrFloat(const std::string& s)
-  {
-    if (s.empty()) {
-      return new TokenInt{};
+bool Tokenizer::checkSymbols(const std::string& s)
+{
+  bool result{true};
+  std::size_t pos{0};
+  try {
+    char c;
+    for (std::size_t i = 0; i < s.size(); ++i) {
+      c = s.at(i);
+      if ((c < '0' || c > '9') &&
+          c != '+' &&
+          c != '-' &&
+          c != '*' &&
+          c != '/' &&
+          c != '.' &&
+          c != ',' &&
+          c != ' ' &&
+          c != '(' &&
+          c != ')') {
+        throw std::exception{};
+      }
+      else {
+        ++pos;
+      }
     }
-    std::size_t i{0};
-    int sign{1};
-    if ('-' == s.at(0)) {
-      sign = -1;
-      ++i;
+  }
+  catch (const std::exception& exc) {
+    result = false;
+    for (std::size_t i = 0; i < pos; ++i) {
+      std::cout << ' ';
     }
-    int order{10};
-    int whole{0};
-    bool isFloat{false};
-    for (; i < s.size(); ++i) {
+    std::cout << "^ invalid character!" << std::endl;
+  }
+  return result;
+}
+
+bool Tokenizer::checkParenthesis(const std::string& s)
+{
+  bool result{true};
+  std::size_t paren_pos{0};
+  try {
+    int openParCount{0};
+    int closeParCount{0};
+    for (std::size_t i = 0; i < s.size(); ++i) {
       char c = s.at(i);
-      if ('.' == c || ',' == c) {
-        isFloat = true;
-        break;
-      }
-      whole = order*whole + (c - '0');
-    }
-    if (isFloat) {
-      double frac{0};
-      order = 10;
-      ++i;
-      for (; i < s.size(); ++i) {
-        char c = s.at(i);
-        frac = frac + (static_cast<double>(c - '0') / order);
-        order *= 10;
-      }
-      return new TokenFloat(sign * (static_cast<double>(whole) + frac));
-    }
-    else {
-      return new TokenInt(sign * whole);
-    }
-  }
-
-  std::vector<Token*> tokenize(const std::string& input)
-  {
-    std::vector<Token*> result{};
-    bool isToken{false};
-    std::string tmp;
-    for (std::size_t i = 0; i < input.size(); ++i) {
-      char c;
-      c = input.at(i);
-      if (' ' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-        }
-      }
-      if ((c >= '0' && c <= '9') || '.' == c || ',' == c) {
-        if (isToken) {
-          tmp.push_back(c);
-        }
-        else {
-          isToken = true;
-          tmp.push_back(c);
-        }
-      }
-      if ('+' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-        }
-        result.push_back(new TokenAdd{});
-      }
-      if ('-' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-          result.push_back(new TokenSub{});
-        }
-        else {
-          isToken = true;
-          tmp.push_back(c);
-        }
-      }
-      if ('*' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-        }
-        result.push_back(new TokenMul{});
-      }
-      if ('/' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-        }
-        result.push_back(new TokenDiv{});
-      }
       if ('(' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
+        if (0 == openParCount) {
+          paren_pos = i;
         }
-        result.push_back(new TokenOpenParen{});
+        ++openParCount;
       }
       if (')' == c) {
-        if (isToken) {
-          isToken = false;
-          std::cout << tmp << std::endl;
-          result.push_back(createIntOrFloat(tmp));
-          tmp.erase();
-        }
-        result.push_back(new TokenCloseParen{});
+        ++closeParCount;
       }
     }
-    std::cout << tmp << std::endl;
-    result.push_back(createIntOrFloat(tmp));
-    return result;
-  }
-
-  void cleanup(const std::vector<Token*> v)
-  {
-    for (const auto p : v) {
-      delete p;
+    if (openParCount != closeParCount) {
+      throw std::exception{};
     }
   }
+  catch (const std::exception& exc) {
+    result = false;
+    for (std::size_t i = 0; i < paren_pos; ++i) {
+      std::cout << ' ';
+    }
+    std::cout << "^ unmatched parethesis!" << std::endl;
+  }
+  return result;
+}
 
-} // namespace tokenizer
+std::vector<std::string> Tokenizer::tokenize(const std::string& s)
+{
+  bool valid{false};
+  valid = Tokenizer::get().verify(s);
+  if (!valid) {
+    return std::vector<std::string>{};
+  }
+  std::vector<std::string> result;
+  bool isToken{false};
+  std::string tmp;
+  for (std::size_t i = 0; i < s.size(); ++i) {
+    char c;
+    c = s.at(i);
+    if (' ' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+    }
+    if ((c >= '0' && c <= '9') || '.' == c || ',' == c) {
+      if (isToken) {
+        tmp.push_back(c);
+      }
+      else {
+        isToken = true;
+        tmp.push_back(c);
+      }
+    }
+    if ('+' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+      result.push_back("+");
+    }
+    if ('-' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+        result.push_back("-");
+      }
+      else {
+        isToken = true;
+        tmp.push_back(c);
+      }
+    }
+    if ('*' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+      result.push_back("*");
+    }
+    if ('/' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+      result.push_back("/");
+    }
+    if ('(' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+      result.push_back("(");
+    }
+    if (')' == c) {
+      if (isToken) {
+        isToken = false;
+        result.push_back(tmp);
+        tmp.erase();
+      }
+      result.push_back(")");
+    }
+  }
+  result.push_back(tmp);
+  return result;
+}
