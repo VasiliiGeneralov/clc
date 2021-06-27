@@ -1,8 +1,9 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include <vector>
+#include <map>
 #include <string>
+#include <vector>
 
 class Parser {
   public:
@@ -14,6 +15,13 @@ class Parser {
   private:
     Parser() = default;
     bool checkout(const std::vector<std::string>& v);
+    const std::map<std::string, int> precedence{
+      {"(", 0},
+      {"+", 1},
+      {"-", 1},
+      {"*", 2},
+      {"/", 2}
+    };
 };
 
 #endif // PARSER_HPP

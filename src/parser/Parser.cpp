@@ -1,6 +1,7 @@
-#include <vector>
+#include <map>
 #include <stack>
 #include <string>
+#include <vector>
 
 #include "Parser.hpp"
 
@@ -30,10 +31,12 @@ std::vector<std::string> Parser::parse(const std::vector<std::string>& v)
   for (std::size_t i = 0; i < v.size(); ++i) {
     std::string token = v.at(i);
     bool emptyStack = s.empty();
+
     if ("(" == token) {
       s.push(token);
       continue;
     }
+
     if (")" == token) {
       while (s.top() != "(") {
         result.push_back(s.top());
@@ -42,23 +45,54 @@ std::vector<std::string> Parser::parse(const std::vector<std::string>& v)
       s.pop();
       continue;
     }
+
     if ("+" == token ||
         "-" == token) {
       if (emptyStack) {
         s.push(token);
         continue;
       }
+
       if ("(" == s.top()) {
         s.push(token);
-      } else {
-        result.push_back(token);
+        continue;
       }
-      continue;
+
+      if ("*" == s.top() ||
+          "/" == s.top() ||
+          "+" == s.top() ||
+          "-" == s.top()) {
+        while ("(" != s.top() &&
+               !s.empty()) {
+          result.push_back(s.top());
+          s.pop();
+        }
+        continue;
+      }
     }
     if ("*" == token ||
         "/" == token) {
-      s.push(token);
-      continue;
+      if (emptyStack) {
+        s.push(token);
+        continue;
+      }
+      if ("+" == token ||
+          "-" == token ||
+          "(" == token) {
+        s.push(token);
+        continue;
+      }
+      if ("*" == token ||
+          "/" == token) {
+        while("+" != s.top() &&
+              "-" != s.top() &&
+              "(" != s.top() &&
+              !s.empty()) {
+          result.push_back(s.top());
+          s.pop();
+        }
+        continue;
+      }
     }
     result.push_back(token);
   }
