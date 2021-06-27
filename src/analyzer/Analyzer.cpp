@@ -1,5 +1,5 @@
+#include <stack>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #include "Analyzer.hpp"
@@ -10,42 +10,51 @@ Analyzer& Analyzer::get()
   return a;
 }
 
-std::tuple<bool, int, double> Analyzer::analyze(const std::vector<std::string>& v)
+double Analyzer::analyze(const std::vector<std::string>& v)
 {
-  return Analyzer::get().traverse(v.begin(), v.end() - 1);
+  std::stack<double> s;
+  for (std::size_t i = 0; i < v.size(); ++i) {
+    std::string token = v.at(i);
+    if ("+" == token) {
+      double right = s.top();
+      s.pop();
+      double left = s.top();
+      s.pop();
+      s.push(left + right);
+      continue;
+    }
+    if ("-" == token) {
+      double right = s.top();
+      s.pop();
+      double left = s.top();
+      s.pop();
+      s.push(left - right);
+      continue;
+    }
+    if ("*" == token) {
+      double right = s.top();
+      s.pop();
+      double left = s.top();
+      s.pop();
+      s.push(left * right);
+      continue;
+    }
+    if ("/" == token) {
+      double right = s.top();
+      s.pop();
+      double left = s.top();
+      s.pop();
+      s.push(left / right);
+      continue;
+    }
+    if (!token.empty()) {
+      s.push(Analyzer::get().create(token));
+    }
+  }
+  return s.top();
 }
 
-std::tuple<bool, int, double> Analyzer::traverse(std::vector<std::string>::const_iterator first,
-                                                 std::vector<std::string>::const_iterator last)
-{
-  if ("+" == *last) {
-    if (floatMode) {
-      return std::tuple(floatMode, 0, std::get<2>(traverse(first, last - 2)) + std::get<2>(traverse(first, last - 1)));
-    }
-    return std::tuple(floatMode, std::get<1>(traverse(first, last - 2)) + std::get<1>(traverse(first, last - 1)), 0);
-  }
-  if ("-" == *last) {
-    if (floatMode) {
-      return std::tuple(floatMode, 0, std::get<2>(traverse(first, last - 2)) - std::get<2>(traverse(first, last - 1)));
-    }
-    return std::tuple(floatMode, std::get<1>(traverse(first, last - 2)) - std::get<1>(traverse(first, last - 1)), 0);
-  }
-  if ("*" == *last) {
-    if (floatMode) {
-      return std::tuple(floatMode, 0, std::get<2>(traverse(first, last - 2)) * std::get<2>(traverse(first, last - 1)));
-    }
-    return std::tuple(floatMode, std::get<1>(traverse(first, last - 2)) * std::get<1>(traverse(first, last - 1)), 0);
-  }
-  if ("/" == *last) {
-    if (!floatMode) {
-      floatMode = true;
-    }
-    return std::tuple(floatMode, 0, std::get<2>(traverse(first, last - 2)) / std::get<2>(traverse(first, last - 1)));
-  }
-  return create(*last);
-}
-
-std::tuple<bool, int, double> Analyzer::create(const std::string& s)
+double Analyzer::create(const std::string& s)
 {
   std::size_t i{0};
   int sign{1};
@@ -73,9 +82,6 @@ std::tuple<bool, int, double> Analyzer::create(const std::string& s)
       frac += (static_cast<double>(c - '0') / order);
       order *= 10;
     }
-    if (!floatMode) {
-      floatMode = true;
-    }
   }
-  return std::tuple(floatMode, sign * whole, static_cast<double>(sign * whole) + frac);
+  return sign * (static_cast<double>(whole) + frac);
 }
