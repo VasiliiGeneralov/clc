@@ -1,31 +1,14 @@
-Общие заметки
+this calculator operates on a plain text line
 
-рекурсивный алгоритм?
+if disallowed symbols are present, stop the execution
 
-токены - объекты-потомки одного класса предка, надо которым определены
-операторы сложения, вычитания, умножения и т.д.
+when input is tokenized, try to convert infix to postfix, at this point there
+should be no parenthesis in the converted string, otherwise return empty vector
+stopping the execution
 
-формируется очередь операций?
+if parse succeeds, evaluate the expression and return result
 
-операциям присваивается приоритет?
-
-у всех токенов определен метод вроде eval/calc, который возвращает результат
-исходной математической операции?
-
-Общий алгоритм: принимаем строку сканируем посимвольно встретили недопустимый
-символ - завершаем работу
-
-Класс-предок токен от него наследуются классы целое число, вещественное число,
-операция, скобка
-
-следует ли хранить в токене прзнак отсутствия потомков в дереве?
-
-пусть будет некая функция eval, дружественная для всех токенов, а атрибуты
-токенов остаются приватными
-
-операции деления и умножения всгде возвращают вещественное число
-
-источники:
+sources:
 https://nickmcd.me/2020/12/02/diy-semantic-math-parser-and-command-line-calculator/
 https://stackoverflow.com/questions/11703082/parsing-math-expression-in-c
 https://www.youtube.com/watch?v=LQ-iW8jm6Mk
