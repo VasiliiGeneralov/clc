@@ -14,8 +14,6 @@ class Tokenizer {
   private:
     Tokenizer() = default;
     bool verify(const std::string& s);
-    bool checkSymbols(const std::string& s);
-    bool checkParenthesis(const std::string& s);
 };
 
 #endif // TOKENIZER_HPP
