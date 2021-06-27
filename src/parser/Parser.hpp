@@ -15,7 +15,7 @@ class Parser {
   private:
     Parser() = default;
     bool checkout(const std::vector<std::string>& v);
-    const std::map<std::string, int> precedence{
+    std::map<std::string, int> precedence{
       {"(", 0},
       {"+", 1},
       {"-", 1},
