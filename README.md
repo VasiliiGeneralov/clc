@@ -3,8 +3,8 @@ This is a project of a natural math notation parsing calculator with
 command-line interface
 
 ## Details
-For more details please see `doc/task.pdf`. Notes and side thoughts can be
-found in `doc/notes`
+For more details please see `doc/task.pdf`. Notes, side thoughts and sources
+can be found in `doc/notes`
 
 ## Assumptions
 * all operations are binary, i.e. every operator __always__ has __two__
