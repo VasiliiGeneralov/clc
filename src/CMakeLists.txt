@@ -3,9 +3,9 @@ add_subdirectory(parser)
 add_subdirectory(analyzer)
 
 set(EXTRA_INCLUDES
-	${PRJECT_SOURCE_DIR}/tokenizer
-	${PRJECT_SOURCE_DIR}/parser
-	${PRJECT_SOURCE_DIR}/analyzer
+	${PROJECT_SOURCE_DIR}/src/tokenizer
+	${PROJECT_SOURCE_DIR}/src/parser
+	${PROJECT_SOURCE_DIR}/src/analyzer
 	)
 
 add_executable(${PROJECT_NAME} main.cpp)

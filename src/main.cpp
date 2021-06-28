@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "tokenizer/Tokenizer.hpp"
-#include "parser/Parser.hpp"
-#include "analyzer/Analyzer.hpp"
+#include "Tokenizer.hpp"
+#include "Parser.hpp"
+#include "Analyzer.hpp"
 
 int main()
 {
