@@ -35,3 +35,5 @@ if(CMAKE_CXX_EXTENSIONS)
 endif()
 
 add_subdirectory(src)
+
+add_subdirectory(test)

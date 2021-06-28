@@ -21,6 +21,12 @@ expression at once:
 4
 ```
 
+## Unit tests
+Tests are implemented as a separate executable and can be found in:
+```shell
+./build/tests
+```
+
 ## Details
 For more details please see `doc/task.pdf`. Notes, side thoughts and sources
 can be found in `doc/notes`
